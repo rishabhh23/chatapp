@@ -2,8 +2,16 @@
   "name": "server",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {
+  "scripts": {
+    "start": "node dist/index",
+    "build": "tsc -p .",
+    "dev": "tsc-watch --onSuccess \"node dist/index.js\""
+  },
+  "devDependencies": {
     "tsc-watch": "^6.2.1",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.1"
   }
 }

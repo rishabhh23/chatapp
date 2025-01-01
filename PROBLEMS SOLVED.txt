@@ -1,0 +1,1 @@
+as web sockets can not be scaled, I scaled it using aiden cloud and so that a published/emitted message is visible to every user even if they are connected to different sockets.
