@@ -2,6 +2,7 @@ import { config } from "dotenv";
 config();
 import { Server, Socket } from "socket.io";
 import Redis from "ioredis";
+import { subscribe } from "diagnostics_channel";
 
 // PUB SUB Architecture
 const pub = new Redis({
@@ -29,6 +30,8 @@ class SocketService {
         origin: "*",
       },
     });
+    //subscribe to events
+    sub.subscribe("MESSAGES");
   }
 
   public initListeners() {
@@ -47,6 +50,14 @@ class SocketService {
         // Optionally, broadcast the message to all connected sockets
         io.emit("event:message:broadcast", { message });
       });
+    });
+
+    //jab bhi koi message subscriber ke paas aaye,
+    //agar channel MESSAGES hai, to saare clients ko forward kar do.
+    sub.on("message", (channel, message) => {
+      if (channel === "MESSAGES") {
+        io.emit("message", message);
+      }
     });
   }
 
