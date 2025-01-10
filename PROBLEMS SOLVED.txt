@@ -1,1 +1,6 @@
-as web sockets can not be scaled, I scaled it using aiden cloud and so that a published/emitted message is visible to every user even if they are connected to different sockets.
+1) as web sockets can not be scaled, I scaled it using aiden cloud and so that a published/emitted message is visible to every user even if they are connected to different sockets.
+
+2) since the number of users is high then obviously the number of messages sent in a second will be high ~150 messages/sec which will result in querying our DB that many times per second so it might result in our DB being crashed.
+solution to this is using KAFKA PIPELINES as a message broker.
+
+3)

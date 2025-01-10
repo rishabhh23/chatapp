@@ -3,6 +3,7 @@ config();
 import { Server, Socket } from "socket.io";
 import Redis from "ioredis";
 import { subscribe } from "diagnostics_channel";
+import prismaClient from "./prisma";
 
 // PUB SUB Architecture
 const pub = new Redis({
@@ -54,9 +55,16 @@ class SocketService {
 
     //jab bhi koi message subscriber ke paas aaye,
     //agar channel MESSAGES hai, to saare clients ko forward kar do.
-    sub.on("message", (channel, message) => {
+    sub.on("message", async (channel, message) => {
       if (channel === "MESSAGES") {
         io.emit("message", message);
+
+        //store messages in the postgresql database.
+        await prismaClient.message.create({
+          data: {
+            text: message,
+          },
+        });
       }
     });
   }
