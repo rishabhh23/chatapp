@@ -4,6 +4,7 @@ import { Server, Socket } from "socket.io";
 import Redis from "ioredis";
 import { subscribe } from "diagnostics_channel";
 import prismaClient from "./prisma";
+import { produceMessage } from "./kafka";
 
 // PUB SUB Architecture
 const pub = new Redis({
@@ -60,11 +61,15 @@ class SocketService {
         io.emit("message", message);
 
         //store messages in the postgresql database.
-        await prismaClient.message.create({
-          data: {
-            text: message,
-          },
-        });
+        // await prismaClient.message.create({
+        //   data: {
+        //     text: message,
+        //   },
+        // });
+
+        //produce message using kafka
+        await produceMessage(message);
+        console.log("Message produced to kafka broker!");
       }
     });
   }
