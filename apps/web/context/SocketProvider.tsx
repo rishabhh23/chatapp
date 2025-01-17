@@ -36,11 +36,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   );
 
   const onMessageRec = useCallback((msg: string) => {
-    console.log("Message recieved from server: ", msg);
-    // const message = JSON.parse(msg) as { message: string };
-    const message =
-      typeof msg === "string" ? JSON.parse(msg).message : msg.message;
-    setMessages((prev) => [...prev, message]);
+    console.log("Message received from server: ", msg);
+
+    try {
+      const parsedMessage = JSON.parse(msg) as { message: string };
+      const message = parsedMessage.message;
+      setMessages((prev) => [...prev, message]);
+    } catch (error) {
+      console.error("Failed to parse message:", error);
+    }
   }, []);
 
   useEffect(() => {
