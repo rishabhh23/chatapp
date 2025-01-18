@@ -7,10 +7,14 @@ import prismaClient from "./prisma";
 config();
 
 //kafka broker
+const caPem = process.env.CA_PEM_BASE64
+  ? Buffer.from(process.env.CA_PEM_BASE64, "base64").toString("utf-8")
+  : null;
+
 const kafka = new Kafka({
   brokers: [process.env.KAFKA_BROKER_URL || ""],
   ssl: {
-    ca: [fs.readFileSync(path.resolve("./ca.pem"), "utf-8")],
+    ca: caPem ? [caPem] : undefined,
   },
   sasl: {
     username: process.env.KAFKA_USERNAME || "",
